@@ -9,11 +9,19 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["ec2-ecr-dotnet-mvc/ec2-ecr-dotnet-mvc.csproj", "ec2-ecr-dotnet-mvc/"]
-RUN dotnet restore "./ec2-ecr-dotnet-mvc/./ec2-ecr-dotnet-mvc.csproj"
+## 使用指令
+COPY ["ec2-ecr-dotnet-mvc.csproj", "./"]
+RUN dotnet restore "ec2-ecr-dotnet-mvc.csproj"
 COPY . .
-WORKDIR "/src/ec2-ecr-dotnet-mvc"
-RUN dotnet build "./ec2-ecr-dotnet-mvc.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src"
+RUN dotnet build "ec2-ecr-dotnet-mvc.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+## 使用vs2022
+# COPY ["ec2-ecr-dotnet-mvc/ec2-ecr-dotnet-mvc.csproj", "ec2-ecr-dotnet-mvc/"]
+# RUN dotnet restore "./ec2-ecr-dotnet-mvc/./ec2-ecr-dotnet-mvc.csproj"
+# COPY . .
+# WORKDIR "/src/ec2-ecr-dotnet-mvc"
+# RUN dotnet build "./ec2-ecr-dotnet-mvc.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
